@@ -30,14 +30,12 @@ RUN pnpm build
 # Production stage
 FROM nginx:alpine
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 # Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy entrypoint script for runtime config injection
-COPY docker/entrypoint.sh /entrypoint.sh
+# Copy nginx configuration and entrypoint from builder
+COPY --from=builder /app/docker/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
