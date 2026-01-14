@@ -547,7 +547,7 @@ export class AFClientService implements AFService {
         }
       },
       name,
-      StrategyType.CACHE_ONLY
+      StrategyType.CACHE_FIRST
     );
 
     if (!isLoaded) {
