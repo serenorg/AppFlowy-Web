@@ -351,6 +351,11 @@ export class AFClientService implements AFService {
     return APIService.signInDiscord(AUTH_CALLBACK_URL);
   }
 
+  @withSignIn()
+  async signInSerenDB(_: { redirectTo: string }) {
+    return APIService.signInSerenDB(AUTH_CALLBACK_URL);
+  }
+
   async getAuthProviders() {
     return APIService.getAuthProviders();
   }

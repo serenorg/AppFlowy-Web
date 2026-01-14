@@ -905,6 +905,7 @@ export enum AuthProvider {
   APPLE = 'apple',
   GITHUB = 'github',
   DISCORD = 'discord',
+  SERENDB = 'serendb',
   PASSWORD = 'password',
   MAGIC_LINK = 'magic_link',
   SAML = 'saml',

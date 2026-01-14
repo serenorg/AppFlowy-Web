@@ -7,6 +7,7 @@ import { ReactComponent as AppleSvg } from '@/assets/login/apple.svg';
 import { ReactComponent as DiscordSvg } from '@/assets/login/discord.svg';
 import { ReactComponent as GithubSvg } from '@/assets/login/github.svg';
 import { ReactComponent as GoogleSvg } from '@/assets/login/google.svg';
+import { ReactComponent as SerenDBSvg } from '@/assets/login/serendb.svg';
 import { notify } from '@/components/_shared/notify';
 import { AFConfigContext } from '@/components/main/app.hooks';
 import { Button } from '@/components/ui/button';
@@ -46,6 +47,11 @@ function LoginProvider({
   const allOptions = useMemo(
     () => [
       {
+        label: 'Continue with SerenDB',
+        Icon: SerenDBSvg,
+        value: AuthProvider.SERENDB,
+      },
+      {
         label: t('web.continueWithGoogle'),
         Icon: GoogleSvg,
         value: AuthProvider.GOOGLE,
@@ -78,6 +84,9 @@ function LoginProvider({
     async (option: AuthProvider) => {
       try {
         switch (option) {
+          case AuthProvider.SERENDB:
+            await service?.signInSerenDB({ redirectTo });
+            break;
           case AuthProvider.GOOGLE:
             await service?.signInGoogle({ redirectTo });
             break;
