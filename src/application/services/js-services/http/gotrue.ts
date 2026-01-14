@@ -324,3 +324,56 @@ export function signInSerenDB(authUrl: string) {
 
   window.open(url, '_current');
 }
+
+/**
+ * Sign in with SerenDB API key via Publisher login bridge
+ * This validates the API key with SerenDB and returns a GoTrue JWT
+ */
+export async function signInWithApiKey(apiKey: string) {
+  try {
+    // Call Publisher's login endpoint
+    const publisherUrl = import.meta.env.APPFLOWY_PUBLISHER_URL || 'https://api-notes.serendb.com';
+    const response = await axios.post<{
+      access_token: string;
+      refresh_token: string;
+      token_type: string;
+      expires_in: number;
+      user: {
+        id: string;
+        email: string;
+      };
+    }>(`${publisherUrl}/v1/auth/login`, {
+      api_key: apiKey,
+    });
+
+    const data = response.data;
+
+    if (data && data.access_token) {
+      // Convert to the format expected by saveGoTrueAuth
+      const tokenData = {
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at: Math.floor(Date.now() / 1000) + data.expires_in,
+        user: data.user,
+      };
+
+      saveGoTrueAuth(JSON.stringify(tokenData));
+      emit(EventType.SESSION_VALID);
+      afterAuth();
+      return data;
+    } else {
+      emit(EventType.SESSION_INVALID);
+      return Promise.reject({
+        code: -1,
+        message: 'Failed to sign in with API key',
+      });
+    }
+    // eslint-disable-next-line
+  } catch (e: any) {
+    emit(EventType.SESSION_INVALID);
+    return Promise.reject({
+      code: e.response?.status || -1,
+      message: e.response?.data?.error || e.message || 'Invalid API key',
+    });
+  }
+}

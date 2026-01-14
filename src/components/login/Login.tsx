@@ -1,43 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
+// ABOUTME: Login page component for Seren Notes
+// ABOUTME: Uses SerenDB API key authentication only (no email/OAuth)
+
 import { useTranslation } from 'react-i18next';
 
-import { AuthProvider } from '@/application/types';
 import { ReactComponent as ArrowRight } from '@/assets/icons/arrow_right.svg';
 import { ReactComponent as Logo } from '@/assets/icons/logo.svg';
-import EmailLogin from '@/components/login/EmailLogin';
-import LoginProvider from '@/components/login/LoginProvider';
-import { AFConfigContext } from '@/components/main/app.hooks';
+import ApiKeyLogin from '@/components/login/ApiKeyLogin';
 import { Separator } from '@/components/ui/separator';
 import { getPlatform } from '@/utils/platform';
 
-export function Login({ redirectTo }: { redirectTo: string }) {
+export function Login({ redirectTo: _redirectTo }: { redirectTo: string }) {
   const { t } = useTranslation();
-  const [availableProviders, setAvailableProviders] = useState<AuthProvider[]>([]);
-  const service = useContext(AFConfigContext)?.service;
-
-  // Fetch available auth providers on mount
-  useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        const providers = await service?.getAuthProviders();
-
-        setAvailableProviders(providers || []);
-
-      } catch (error) {
-        console.error('Failed to fetch auth providers:', error);
-        // On error, set empty array (no OAuth providers)
-        setAvailableProviders([]);
-      }
-    };
-
-    void fetchProviders();
-  }, [service]);
-
-  // Filter to check if there are any OAuth providers (not EMAIL or PASSWORD)
-  const hasOAuthProviders = availableProviders.some(
-    provider => ![AuthProvider.EMAIL, AuthProvider.PASSWORD, AuthProvider.MAGIC_LINK].includes(provider)
-  );
-
   const isMobile = getPlatform().isMobile;
 
   return (
@@ -55,17 +28,9 @@ export function Login({ redirectTo }: { redirectTo: string }) {
           className={'flex w-full cursor-pointer flex-col items-center justify-center gap-5'}
         >
           <Logo className={'h-9 w-9'} />
-          <div className={'text-xl font-semibold'}>{t('welcomeTo')} AppFlowy</div>
+          <div className={'text-xl font-semibold'}>{t('welcomeTo')} Seren Notes</div>
         </div>
-        <EmailLogin redirectTo={redirectTo} />
-        {hasOAuthProviders && (
-          <div className={'flex w-full items-center justify-center gap-2 text-text-secondary'}>
-            <Separator className={'flex-1'} />
-            {t('web.or')}
-            <Separator className={'flex-1'} />
-          </div>
-        )}
-        <LoginProvider redirectTo={redirectTo} availableProviders={availableProviders} />
+        <ApiKeyLogin />
         <div
           className={
             'w-[300px] overflow-hidden whitespace-pre-wrap break-words text-center text-[12px] tracking-[0.36px] text-text-secondary'
@@ -73,7 +38,7 @@ export function Login({ redirectTo }: { redirectTo: string }) {
         >
           <span>{t('web.signInAgreement')} </span>
           <a
-            href={'https://appflowy.com/terms'}
+            href={'https://serendb.com/terms'}
             target={'_blank'}
             className={'text-text-secondary underline'}
             rel='noreferrer'
@@ -82,7 +47,7 @@ export function Login({ redirectTo }: { redirectTo: string }) {
           </a>{' '}
           {t('web.and')}{' '}
           <a
-            href={'https://appflowy.com/privacy'}
+            href={'https://serendb.com/privacy'}
             target={'_blank'}
             className={'text-text-secondary underline'}
             rel='noreferrer'
@@ -102,7 +67,7 @@ export function Login({ redirectTo }: { redirectTo: string }) {
         <Separator className={'w-[320px] max-w-full'} />
         <div
           onClick={() => {
-            window.location.href = 'https://appflowy.com';
+            window.location.href = 'https://serendb.com';
           }}
           className={
             'flex w-full cursor-pointer items-center justify-center gap-2 text-xs font-medium text-text-secondary'
