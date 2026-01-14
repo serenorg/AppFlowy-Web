@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#0066FF"/>
+  <!-- Letter S stylized as a note/document -->
+  <path d="M24 18h16c2 0 4 2 4 4v4c0 2-2 4-4 4H24c-2 0-4 2-4 4v4c0 2 2 4 4 4h16"
+        stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Small accent lines representing text/notes -->
+  <line x1="26" y1="44" x2="38" y2="44" stroke="#00CC66" stroke-width="2" stroke-linecap="round"/>
+</svg>
