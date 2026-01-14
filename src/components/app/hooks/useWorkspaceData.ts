@@ -48,40 +48,19 @@ export function useWorkspaceData() {
           throw new Error('App outline not found');
         }
 
-        // Load shareWithMe data and append as hidden space
-        let outlineWithShareWithMe = res;
+        // Note: shareWithMe feature is not implemented in upstream AppFlowy Cloud
+        // Skip the getShareWithMe call until the backend supports it
 
-        try {
-          const shareWithMe = await service.getShareWithMe(workspaceId);
-
-          if (shareWithMe && shareWithMe.children && shareWithMe.children.length > 0) {
-            // Create a hidden space for shareWithMe
-            const shareWithMeSpace: View = {
-              ...shareWithMe,
-              extra: {
-                ...shareWithMe.extra,
-                is_space: true,
-                is_hidden_space: true, // Mark as hidden so it doesn't show in normal space list
-              },
-            };
-
-            outlineWithShareWithMe = [...res, shareWithMeSpace];
-          }
-        } catch (error) {
-          console.error('Failed to load shareWithMe data:', error);
-          // Continue with original outline if shareWithMe fails
-        }
-
-        stableOutlineRef.current = outlineWithShareWithMe;
-        setOutline(outlineWithShareWithMe);
+        stableOutlineRef.current = res;
+        setOutline(res);
 
         if (eventEmitter) {
-          eventEmitter.emit(APP_EVENTS.OUTLINE_LOADED, outlineWithShareWithMe || []);
+          eventEmitter.emit(APP_EVENTS.OUTLINE_LOADED, res || []);
         }
 
         if (!force) return;
 
-        const firstView = findViewByLayout(outlineWithShareWithMe, [
+        const firstView = findViewByLayout(res, [
           ViewLayout.Document,
           ViewLayout.Board,
           ViewLayout.Grid,
@@ -106,7 +85,7 @@ export function useWorkspaceData() {
 
           const lastViewId = localStorage.getItem('last_view_id');
 
-          if (lastViewId && findView(outlineWithShareWithMe, lastViewId)) {
+          if (lastViewId && findView(res, lastViewId)) {
             navigate(`/app/${workspaceId}/${lastViewId}${search}`);
           } else if (firstView) {
             navigate(`/app/${workspaceId}/${firstView.view_id}${search}`);
