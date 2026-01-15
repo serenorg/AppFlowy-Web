@@ -15,7 +15,7 @@ const MARKETING_PATHS = ['/after-payment', '/login', '/as-template', '/app', '/a
 
 // Static file paths that should be served from dist
 const STATIC_PATHS = ['/static/', '/af_icons/', '/covers/', '/.well-known/'];
-const STATIC_FILES = ['/appflowy.ico', '/appflowy.svg', '/og-image.png'];
+const STATIC_FILES = ['/favicon-16x16.png', '/favicon-32x32.png', '/seren-notes.svg', '/og-image.png'];
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html',
