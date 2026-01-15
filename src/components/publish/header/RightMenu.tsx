@@ -1,14 +1,15 @@
-import { Divider, IconButton, Tooltip } from '@mui/material';
+// ABOUTME: Right menu component for publish header
+// ABOUTME: Contains more actions, duplicate button, and template options
+
+import { IconButton, Tooltip } from '@mui/material';
 import { useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PublishContext, usePublishContext } from '@/application/publish';
-import { ReactComponent as Logo } from '@/assets/icons/logo.svg';
 import { ReactComponent as TemplateIcon } from '@/assets/icons/template.svg';
 import MoreActions from '@/components/_shared/more-actions/MoreActions';
 import { useCurrentUser } from '@/components/main/app.hooks';
 import { Duplicate } from '@/components/publish/header/duplicate';
-import { openOrDownload } from '@/utils/open_schema';
 
 function RightMenu() {
   const { t } = useTranslation();
@@ -43,12 +44,6 @@ function RightMenu() {
           </IconButton>
         </Tooltip>
       )}
-      <Divider orientation={'vertical'} className={'mx-2'} flexItem />
-      <Tooltip title={t('publish.downloadApp')}>
-        <button onClick={() => openOrDownload()}>
-          <Logo className={'h-5 w-5'} />
-        </button>
-      </Tooltip>
     </>
   );
 }

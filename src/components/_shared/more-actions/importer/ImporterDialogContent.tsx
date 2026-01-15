@@ -2,6 +2,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import React, { useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as EvernoteIcon } from '@/assets/icons/evernote.svg';
 import { ReactComponent as NotionIcon } from '@/assets/icons/notion.svg';
 import FileDropzone from '@/components/_shared/file-dropzone/FileDropzone';
 import { notify } from '@/components/_shared/notify';
@@ -44,6 +45,12 @@ function ImporterDialogContent({ source, onSuccess }: { source?: string; onSucce
           label={t('web.importNotion')}
           icon={<NotionIcon className={'mb-0 h-4 w-4'} />}
         />
+        <ViewTab
+          className={'flex flex-row items-center justify-center gap-1.5'}
+          value={'evernote'}
+          label={t('web.importEvernote')}
+          icon={<EvernoteIcon className={'mb-0 h-4 w-4'} />}
+        />
       </ViewTabs>
       <div className={'p-2 pb-0'}>
         <TabPanel
@@ -60,6 +67,30 @@ function ImporterDialogContent({ source, onSuccess }: { source?: string; onSucce
             }}
             disabled={!isError && progress < 1 && progress > 0}
             placeholder={t('web.dropNotionFile')}
+            loading={!isError && progress < 1 && progress > 0}
+          />
+          {progress > 0 && (
+            <LinearProgress
+              variant='determinate'
+              color={isError ? 'error' : progress === 1 ? 'success' : 'primary'}
+              value={progress * 100}
+            />
+          )}
+        </TabPanel>
+        <TabPanel
+          className={'flex min-w-[480px] max-w-full flex-col gap-2 overflow-hidden max-sm:w-full max-sm:min-w-[80vw]'}
+          index={'evernote'}
+          value={value}
+        >
+          <FileDropzone
+            accept={'.enex,application/xml,text/xml'}
+            multiple={false}
+            onChange={(files) => {
+              if (!files.length) return;
+              void handleUpload(files[0]);
+            }}
+            disabled={!isError && progress < 1 && progress > 0}
+            placeholder={t('web.dropEvernoteFile')}
             loading={!isError && progress < 1 && progress > 0}
           />
           {progress > 0 && (

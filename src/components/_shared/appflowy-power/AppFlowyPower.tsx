@@ -1,6 +1,9 @@
+// ABOUTME: Component that displays "Powered by Seren" branding
+// ABOUTME: Used in sidebar footer and landing pages
+
 import { Divider } from '@mui/material';
 
-import { ReactComponent as AppFlowyLogo } from '@/assets/icons/appflowy.svg';
+import { ReactComponent as SerenLogo } from '@/assets/icons/logo.svg';
 
 function AppFlowyPower({ divider, width }: { divider?: boolean; width?: number }) {
   return (
@@ -16,17 +19,18 @@ function AppFlowyPower({ divider, width }: { divider?: boolean; width?: number }
 
       <div
         onClick={() => {
-          window.open('https://appflowy.com', '_blank');
+          window.open('https://serendb.com', '_blank');
         }}
         style={{
           width,
         }}
         className={
-          'flex  w-full cursor-pointer items-center justify-center gap-2 py-4 text-sm text-text-primary opacity-50'
+          'flex w-full cursor-pointer items-center justify-center gap-2 py-4 text-sm text-text-primary opacity-50'
         }
       >
         Powered by
-        <AppFlowyLogo className={'w-[88px]'} />
+        <SerenLogo className={'h-5 w-5'} />
+        <span className="font-semibold">Seren</span>
       </div>
     </div>
   );

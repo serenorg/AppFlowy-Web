@@ -1,3 +1,6 @@
+// ABOUTME: AI Chat component for workspace chat functionality
+// ABOUTME: Provides AI-powered chat interface with document operations
+
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import React, { useEffect, useMemo } from 'react';
 
@@ -8,7 +11,6 @@ import { useCurrentUserWorkspaceAvatar } from '@/components/app/useWorkspaceMemb
 import { Chat, ChatRequest } from '@/components/chat';
 import { useCurrentUser, useService } from '@/components/main/app.hooks';
 import { getPlatform } from '@/utils/platform';
-import { downloadPage } from '@/utils/url';
 
 
 export function AIChat({ chatId, onRendered }: { chatId: string; onRendered?: () => void }) {
@@ -120,31 +122,18 @@ export function AIChat({ chatId, onRendered }: { chatId: string; onRendered?: ()
         <Dialog open={openMobilePrompt} keepMounted={false}>
           <DialogTitle>{'📱 Mobile device detected'}</DialogTitle>
           <DialogContent>
-            <div className={'mb-2 text-base'}>{`Chat listings only. For full chat features:`}</div>
-            <ul className={'px-2 text-text-secondary'}>
-              <li>• Use desktop browser</li>
-              <li>{`• Download AppFlowy's mobile app`}</li>
-            </ul>
+            <div className={'mb-2 text-base'}>{'For the best chat experience, please use a desktop browser.'}</div>
+            <div className={'text-text-secondary'}>{'Some features may be limited on mobile devices.'}</div>
           </DialogContent>
           <DialogActions className={'flex w-full items-center justify-center gap-2 p-4'}>
             <Button
+              className={'flex-1'}
               variant={'contained'}
-              className={'flex-1'}
-              onClick={() => {
-                window.open(downloadPage);
-              }}
-            >
-              {'Get the App'}
-            </Button>
-            <Button
-              className={'flex-1'}
-              variant={'outlined'}
-              color={'inherit'}
               onClick={() => {
                 setOpenMobilePrompt(false);
               }}
             >
-              {'Dismiss'}
+              {'Continue'}
             </Button>
           </DialogActions>
         </Dialog>

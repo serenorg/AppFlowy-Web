@@ -1,3 +1,6 @@
+// ABOUTME: Page shown when calendar view is not supported on device
+// ABOUTME: Suggests using desktop browser instead
+
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as CalendarLogo } from '@/assets/icons/warning_logo.svg';
@@ -12,26 +15,20 @@ export function CalendarUnsupportedPage() {
       <div className="mb-6">
         <CalendarLogo className="w-12 h-12 text-text-placeholder" />
       </div>
-      
+
       {/* Title */}
       <h2 className="text-lg font-semibold text-text-title mb-4 text-center">
         Calendar Not Supported
       </h2>
-      
+
       {/* Description */}
       <p className="text-text-caption text-center mb-8 max-w-md">
-        Calendar view is not supported on this device. For the best calendar experience, please download the AppFlowy mobile app.
+        Calendar view is not supported on this device. For the best experience, please use a desktop browser.
       </p>
-      
+
       {/* Buttons */}
       <div className="flex flex-col max-sm:w-full sm:flex-row gap-3">
         <Button
-          onClick={() => window.open('https://appflowy.com/download', '_blank')}
-        >
-          Download AppFlowy
-        </Button>
-        <Button
-          variant="outline"
           onClick={() => window.open('/app', '_self')}
         >
           {t('landingPage.backToHome')}

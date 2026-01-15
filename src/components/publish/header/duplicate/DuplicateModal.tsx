@@ -1,5 +1,8 @@
+// ABOUTME: Modal for duplicating published content to workspace
+// ABOUTME: Allows selecting workspace and space for duplication
+
 import React, { useCallback, useContext, useEffect } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { PublishContext } from '@/application/publish';
 import { Types, ViewLayout } from '@/application/types';
@@ -9,7 +12,6 @@ import { AFConfigContext } from '@/components/main/app.hooks';
 import SelectWorkspace from '@/components/publish/header/duplicate/SelectWorkspace';
 import SpaceList from '@/components/publish/header/duplicate/SpaceList';
 import { useLoadWorkspaces } from '@/components/publish/header/duplicate/useDuplicate';
-import { downloadPage, openAppFlowySchema } from '@/utils/url';
 
 function getCollabTypeFromViewLayout(layout: ViewLayout) {
   switch (layout) {
@@ -124,7 +126,6 @@ function DuplicateModal({ open, onClose }: { open: boolean; onClose: () => void 
           },
         }}
         okText={t('openInBrowser')}
-        cancelText={t('openInApp')}
         onOk={() => {
           if (!newViewId || !selectedWorkspaceId) return;
           let url = `/app/${selectedWorkspaceId}/${newViewId}`;
@@ -139,29 +140,12 @@ function DuplicateModal({ open, onClose }: { open: boolean; onClose: () => void 
 
           window.open(url, '_self');
         }}
-        onCancel={() => {
-          window.open(openAppFlowySchema, '_self');
-        }}
         onClose={() => setSuccessModalOpen(false)}
         open={successModalOpen}
         title={<div className={'text-left'}>{t('addToWorkspace')}</div>}
       >
         <div className={'w-full whitespace-pre-wrap break-words pb-1 text-text-secondary'}>
-          <Trans
-            i18nKey='downloadTip'
-            components={{
-              link: (
-                <span
-                  onClick={() => {
-                    window.open(downloadPage, '_blank');
-                  }}
-                  className={'cursor-pointer text-text-action hover:underline'}
-                >
-                  {t('here')}
-                </span>
-              ),
-            }}
-          />
+          {'Your copy has been added to your workspace. Click below to open it.'}
         </div>
       </NormalModal>
     </>
