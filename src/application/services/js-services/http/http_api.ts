@@ -253,24 +253,32 @@ let keepAliveIntervalId: ReturnType<typeof setInterval> | null = null;
 // Keep-alive interval in milliseconds (4 minutes - less than SerenDB's 5-minute suspend timeout)
 const KEEP_ALIVE_INTERVAL_MS = 4 * 60 * 1000;
 
+// Store the base URL for keep-alive pings (bypasses axios interceptors)
+let keepAliveBaseUrl: string | null = null;
+
 /**
  * Sends a lightweight ping to keep the SerenDB endpoint warm
- * Prevents database scale-to-zero during active sessions
+ * Uses fetch() directly to bypass axios interceptors and avoid triggering logout on 401
  */
 async function sendKeepAlivePing() {
-  if (!axiosInstance) return;
+  if (!keepAliveBaseUrl) return;
 
   try {
-    // Use a lightweight endpoint that doesn't require authentication
-    // The workspaces endpoint is suitable as it's frequently called anyway
-    await axiosInstance.get('/api/workspace', {
-      // Short timeout since we just want to keep the connection warm
-      timeout: 5000,
+    // Use fetch() directly to bypass axios interceptors
+    // This prevents 401 responses from triggering the logout handler
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    await fetch(`${keepAliveBaseUrl}/api/workspace`, {
+      method: 'GET',
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
     Log.debug('[keepAlive] Database ping successful');
   } catch (e) {
     // Don't log errors for keep-alive failures - they're expected when user is logged out
-    Log.debug('[keepAlive] Ping failed (expected if logged out)', e);
+    Log.debug('[keepAlive] Ping failed (expected if logged out)');
   }
 }
 
@@ -285,6 +293,9 @@ export function initAPIService(config: AFCloudConfig) {
       'Content-Type': 'application/json',
     },
   });
+
+  // Store base URL for keep-alive pings (uses fetch to bypass interceptors)
+  keepAliveBaseUrl = config.baseURL;
 
   initGrantService(config.gotrueURL);
 
