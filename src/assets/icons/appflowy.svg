@@ -1,8 +1,6 @@
 <svg width="88" height="24" viewBox="0 0 88 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Seren Logo Icon -->
-  <circle cx="12" cy="12" r="10" fill="#0066FF"/>
+  <rect x="2" y="2" width="20" height="20" rx="4" fill="#2563EB"/>
   <path d="M8 8h8c1 0 2 1 2 2v1c0 1-1 2-2 2H8c-1 0-2 1-2 2v1c0 1 1 2 2 2h8"
         stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
-  <!-- "Seren" text -->
   <text x="26" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="currentColor">Seren</text>
 </svg>
