@@ -443,33 +443,32 @@ export async function getAuthProviders(): Promise<AuthProvider[]> {
       }>>(url)
     );
 
-    return payload.providers
-      .map((provider: string) => {
-        switch (provider.toLowerCase()) {
-          case 'google':
-            return AuthProvider.GOOGLE;
-          case 'apple':
-            return AuthProvider.APPLE;
-          case 'github':
-            return AuthProvider.GITHUB;
-          case 'discord':
-            return AuthProvider.DISCORD;
-          case 'email':
-            return AuthProvider.EMAIL;
-          case 'password':
-            return AuthProvider.PASSWORD;
-          case 'magic_link':
-            return AuthProvider.MAGIC_LINK;
-          case 'saml':
-            return AuthProvider.SAML;
-          case 'phone':
-            return AuthProvider.PHONE;
-          default:
-            console.warn(`Unknown auth provider from server: ${provider}`);
-            return null;
-        }
-      })
-      .filter((provider): provider is AuthProvider => provider !== null);
+    const mapped: (AuthProvider | null)[] = payload.providers.map((provider: string): AuthProvider | null => {
+      switch (provider.toLowerCase()) {
+        case 'google':
+          return AuthProvider.GOOGLE;
+        case 'apple':
+          return AuthProvider.APPLE;
+        case 'github':
+          return AuthProvider.GITHUB;
+        case 'discord':
+          return AuthProvider.DISCORD;
+        case 'email':
+          return AuthProvider.EMAIL;
+        case 'password':
+          return AuthProvider.PASSWORD;
+        case 'magic_link':
+          return AuthProvider.MAGIC_LINK;
+        case 'saml':
+          return AuthProvider.SAML;
+        case 'phone':
+          return AuthProvider.PHONE;
+        default:
+          console.warn(`Unknown auth provider from server: ${provider}`);
+          return null;
+      }
+    });
+    return mapped.filter((p): p is AuthProvider => p !== null);
   } catch (error) {
     const message = (error as APIError)?.message;
 
@@ -1401,26 +1400,14 @@ export async function sendRequestAccess(workspaceId: string, viewId: string) {
 }
 
 export async function getSubscriptionLink(workspaceId: string, plan: SubscriptionPlan, interval: SubscriptionInterval) {
-  const url = `/billing/api/v1/subscription-link`;
-
-  return executeAPIRequest<string>(() =>
-    axiosInstance?.get<APIResponse<string>>(url, {
-      params: {
-        workspace_subscription_plan: plan,
-        recurring_interval: interval,
-        workspace_id: workspaceId,
-        success_url: window.location.href,
-      },
-    })
-  );
+  // Seren Notes uses SerenBucks billing, not AppFlowy subscriptions
+  // Redirect to Seren billing portal instead
+  return Promise.resolve('https://serendb.com/billing');
 }
 
 export async function getSubscriptions() {
-  const url = `/billing/api/v1/subscriptions`;
-
-  return executeAPIRequest<Subscriptions>(() =>
-    axiosInstance?.get<APIResponse<Subscriptions>>(url)
-  );
+  // Seren Notes uses SerenBucks billing, not AppFlowy subscriptions
+  return Promise.resolve([] as Subscriptions);
 }
 
 export async function getWorkspaceSubscriptions(workspaceId: string) {
@@ -1435,11 +1422,9 @@ export async function getWorkspaceSubscriptions(workspaceId: string) {
 }
 
 export async function getActiveSubscription(workspaceId: string) {
-  const url = `/billing/api/v1/active-subscription/${workspaceId}`;
-
-  return executeAPIRequest<SubscriptionPlan[]>(() =>
-    axiosInstance?.get<APIResponse<SubscriptionPlan[]>>(url)
-  );
+  // Seren Notes uses SerenBucks billing, not AppFlowy subscriptions
+  // Return empty array (free plan) to avoid CORS errors from billing API
+  return Promise.resolve([] as SubscriptionPlan[]);
 }
 
 export async function createImportTask(file: File) {
@@ -1808,16 +1793,8 @@ export async function deleteQuickNote(workspaceId: string, noteId: string) {
 }
 
 export async function cancelSubscription(workspaceId: string, plan: SubscriptionPlan, reason?: string) {
-  const url = `/billing/api/v1/cancel-subscription`;
-
-  return executeAPIVoidRequest(() =>
-    axiosInstance?.post<APIResponse>(url, {
-      workspace_id: workspaceId,
-      plan,
-      sync: true,
-      reason,
-    })
-  );
+  // Seren Notes uses SerenBucks billing, not AppFlowy subscriptions
+  return Promise.resolve();
 }
 
 export async function searchWorkspace(workspaceId: string, query: string) {
