@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { UIVariant } from '@/application/types';
-import { ReactComponent as SerenLogo } from '@/assets/icons/seren-notes.svg';
+import serenLogo from '@/assets/icons/seren-notes-logo.png';
 import { ReactComponent as DoubleArrowLeft } from '@/assets/icons/double_arrow_left.svg';
 import Resizer from '@/components/_shared/outline/Resizer';
 import { AFScroller } from '@/components/_shared/scroller';
@@ -89,7 +89,7 @@ export function OutlineDrawer({
                 navigate('/app');
               }}
             >
-              <SerenLogo className='h-full w-full' />
+              <img src={serenLogo} className='h-full w-full object-contain' alt="Seren Notes" />
             </div>
           )}
           <Tooltip

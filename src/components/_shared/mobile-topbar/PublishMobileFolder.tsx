@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import { usePublishContext } from '@/application/publish';
-import { ReactComponent as SerenLogo } from '@/assets/icons/seren-notes.svg';
+import serenLogo from '@/assets/icons/seren-notes-logo.png';
 import { AFScroller } from '@/components/_shared/scroller';
 
 import MobileOutline from 'src/components/_shared/mobile-outline/MobileOutline';
@@ -20,7 +20,7 @@ function PublishMobileFolder({ onClose }: { onClose: () => void }) {
         }}
         className={'sticky top-0 z-[10] w-full bg-background-primary py-2 pb-0'}
       >
-        <SerenLogo className={'h-[48px] w-[100px]'} />
+        <img src={serenLogo} className='h-[48px] w-[100px] object-contain' alt="Seren Notes" />
       </div>
       {outline && (
         <MobileOutline outline={outline} onClose={onClose} selectedViewId={viewId} navigateToView={navigateToView} />

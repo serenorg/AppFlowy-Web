@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { ReactComponent as SerenLogo } from '@/assets/icons/seren-notes.svg';
+import serenLogo from '@/assets/icons/seren-notes-logo.png';
 import Import from '@/components/_shared/more-actions/importer/Import';
 
 function ImportPage() {
@@ -20,7 +20,7 @@ function ImportPage() {
       <div className={'h-[64px] w-full px-6 py-4'}>
         <Typography variant='h3' className={'mb-[27px] flex items-center gap-4 text-text-primary'} gutterBottom>
           <>
-            <SerenLogo className={'w-32'} />
+            <img src={serenLogo} className='w-32 object-contain' alt="Seren Notes" />
           </>
         </Typography>
       </div>

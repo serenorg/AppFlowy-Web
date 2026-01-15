@@ -1,5 +1,5 @@
 import { UserWorkspaceInfo, Workspace } from '@/application/types';
-import { ReactComponent as SerenLogo } from '@/assets/icons/seren-notes.svg';
+import serenLogo from '@/assets/icons/seren-notes-logo.png';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 
@@ -28,7 +28,7 @@ function CurrentWorkspace({
           void onChangeWorkspace(selectedId);
         }}
       >
-        <SerenLogo className='!h-full !w-[118px]' />
+        <img src={serenLogo} className='!h-full !w-[118px] object-contain' alt="Seren Notes" />
       </div>
     );
   }

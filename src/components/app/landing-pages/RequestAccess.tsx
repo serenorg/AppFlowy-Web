@@ -1,4 +1,4 @@
-import { ReactComponent as SerenLogo } from '@/assets/icons/seren-notes.svg';
+import serenLogo from '@/assets/icons/seren-notes-logo.png';
 import { RequestAccessError } from '@/components/app/hooks/useWorkspaceData';
 import { RequestAccessContent } from '@/components/app/share/RequestAccessContent';
 
@@ -16,7 +16,7 @@ function RequestAccess({ error }: RequestAccessProps) {
           }}
           className='h-full w-[141px] cursor-pointer'
         >
-          <SerenLogo className='h-full w-full' />
+          <img src={serenLogo} className='h-full w-full object-contain' alt="Seren Notes" />
         </span>
       </div>
       <div className='flex w-full flex-1 items-center justify-center'>

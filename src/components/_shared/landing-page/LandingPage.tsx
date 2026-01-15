@@ -2,7 +2,7 @@ import { HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useMemo 
 import { useTranslation } from 'react-i18next';
 
 import { Workspace } from '@/application/types';
-import { ReactComponent as SerenLogo } from '@/assets/icons/seren-notes.svg';
+import serenLogo from '@/assets/icons/seren-notes-logo.png';
 import LandingFooter from '@/components/_shared/landing-page/LandingFooter';
 import { AFConfigContext, useCurrentUser } from '@/components/main/app.hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -65,7 +65,7 @@ export default function LandingPage({
           }}
           className='h-full w-[141px] cursor-pointer'
         >
-          <SerenLogo className='h-full w-full' />
+          <img src={serenLogo} className='h-full w-full object-contain' alt="Seren Notes" />
         </span>
       </div>
       <div className='flex w-full flex-1  items-center justify-center'>
