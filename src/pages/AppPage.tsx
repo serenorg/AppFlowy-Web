@@ -127,8 +127,17 @@ function AppPage() {
     [loadView]
   );
 
+  // Track last loaded viewId to prevent re-loading loops when outline changes
+  const lastLoadedViewIdRef = React.useRef<string | null>(null);
+
   useEffect(() => {
     if (!viewId || layout === undefined || layout === ViewLayout.AIChat) return;
+
+    // Skip if we've already loaded this view to prevent re-render loops
+    // when outline changes but view content is the same
+    if (lastLoadedViewIdRef.current === viewId && doc?.object_id === viewId) {
+      return;
+    }
 
     if (isDatabaseContainer(view)) {
       const firstChild = getFirstChildView(view);
@@ -137,6 +146,7 @@ function AppPage() {
         // Clear current state to avoid rendering stale content while redirecting
         setError(null);
         setDoc(undefined);
+        lastLoadedViewIdRef.current = null; // Reset so new view loads
         void toView(firstChild.view_id, undefined, true);
         return;
       }
@@ -145,12 +155,18 @@ function AppPage() {
       // resolve the first child (may fetch from server).
       setError(null);
       setDoc(undefined);
+      lastLoadedViewIdRef.current = null; // Reset so new view loads
       void toView(viewId, undefined, true);
       return;
     }
 
+    lastLoadedViewIdRef.current = viewId;
     void loadPageDoc(viewId);
-  }, [loadPageDoc, viewId, layout, toView, view]);
+    // Note: We intentionally exclude 'view' from dependencies to prevent re-render loops.
+    // The view object reference changes when outline is re-fetched, even if content is same.
+    // We use view?.view_id as a stable identifier instead.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadPageDoc, viewId, layout, toView, view?.view_id, doc?.object_id]);
 
   useEffect(() => {
     if (layout === ViewLayout.AIChat) {
