@@ -283,12 +283,16 @@ export function initAPIService(config: AFCloudConfig) {
 
           access_token = newToken?.access_token || '';
         } catch (e) {
-          console.warn('[initAPIService][request] refresh token failed, marking token invalid', {
+          console.warn('[initAPIService][request] refresh token failed, redirecting to login', {
             url: config.url,
             message: (e as Error)?.message,
           });
           invalidToken();
-          return config;
+          // Redirect to login immediately instead of continuing request without auth
+          // This prevents reload loops when refresh token is invalid/expired
+          window.location.href = `/login?redirectTo=${encodeURIComponent(window.location.pathname)}`;
+          // Reject to stop the request chain
+          return Promise.reject(new Error('Token refresh failed, redirecting to login'));
         }
       }
 
