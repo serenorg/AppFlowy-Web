@@ -247,6 +247,33 @@ async function executeAPIVoidRequest(
   }
 }
 
+// Keep-alive interval ID for cleanup
+let keepAliveIntervalId: ReturnType<typeof setInterval> | null = null;
+
+// Keep-alive interval in milliseconds (4 minutes - less than SerenDB's 5-minute suspend timeout)
+const KEEP_ALIVE_INTERVAL_MS = 4 * 60 * 1000;
+
+/**
+ * Sends a lightweight ping to keep the SerenDB endpoint warm
+ * Prevents database scale-to-zero during active sessions
+ */
+async function sendKeepAlivePing() {
+  if (!axiosInstance) return;
+
+  try {
+    // Use a lightweight endpoint that doesn't require authentication
+    // The workspaces endpoint is suitable as it's frequently called anyway
+    await axiosInstance.get('/api/workspace', {
+      // Short timeout since we just want to keep the connection warm
+      timeout: 5000,
+    });
+    Log.debug('[keepAlive] Database ping successful');
+  } catch (e) {
+    // Don't log errors for keep-alive failures - they're expected when user is logged out
+    Log.debug('[keepAlive] Ping failed (expected if logged out)', e);
+  }
+}
+
 export function initAPIService(config: AFCloudConfig) {
   if (axiosInstance) {
     return;
@@ -260,6 +287,16 @@ export function initAPIService(config: AFCloudConfig) {
   });
 
   initGrantService(config.gotrueURL);
+
+  // Start keep-alive pings to prevent SerenDB scale-to-zero
+  if (keepAliveIntervalId) {
+    clearInterval(keepAliveIntervalId);
+  }
+
+  keepAliveIntervalId = setInterval(sendKeepAlivePing, KEEP_ALIVE_INTERVAL_MS);
+
+  // Send initial ping after short delay to warm up the database
+  setTimeout(sendKeepAlivePing, 5000);
 
   axiosInstance.interceptors.request.use(
     async (config) => {

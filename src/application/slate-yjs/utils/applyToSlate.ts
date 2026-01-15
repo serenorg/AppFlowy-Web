@@ -97,16 +97,20 @@ function applyUpdateBlockYEvent(editor: YjsEditor, blockId: string, event: YMapE
     newDataKeys: Object.keys(newData),
   });
 
-  editor.apply({
-    type: 'set_node',
-    path,
-    newProperties: {
-      data: newData,
-    },
-    properties: {
-      data: oldData,
-    },
-  });
+  try {
+    editor.apply({
+      type: 'set_node',
+      path,
+      newProperties: {
+        data: newData,
+      },
+      properties: {
+        data: oldData,
+      },
+    });
+  } catch (e) {
+    Log.error(`❌ Failed to update block data for ${blockId}:`, { path, error: e });
+  }
 }
 
 /**
@@ -182,6 +186,12 @@ function applyBlocksYEvent(editor: YjsEditor, event: BlockMapEvent) {
  */
 function handleNewBlock(editor: YjsEditor, key: string, keyPath: Record<string, number[]>) {
   const block = getBlock(key, editor.sharedRoot);
+
+  if (!block) {
+    Log.error(`❌ Block not found in Yjs: ${key}`);
+    return;
+  }
+
   const parentId = block.get(YjsEditorKey.block_parent);
   const pageId = getPageId(editor.sharedRoot);
   const parent = getBlock(parentId, editor.sharedRoot);
@@ -289,17 +299,21 @@ function handleNewBlock(editor: YjsEditor, key: string, keyPath: Record<string, 
     childrenCount: textNode ? 1 : 0,
   });
 
-  editor.apply({
-    type: 'insert_node',
-    path,
-    node: {
-      ...slateNode,
-      children: textNode ? [textNode] : [],
-    },
-  });
+  try {
+    editor.apply({
+      type: 'insert_node',
+      path,
+      node: {
+        ...slateNode,
+        children: textNode ? [textNode] : [],
+      },
+    });
 
-  keyPath[key] = path;
-  Log.debug(`💾 Cached path for block ${key}:`, keyPath[key]);
+    keyPath[key] = path;
+    Log.debug(`💾 Cached path for block ${key}:`, keyPath[key]);
+  } catch (e) {
+    Log.error(`❌ Failed to insert block ${key} at path:`, { path, error: e });
+  }
 }
 
 /**
@@ -332,11 +346,15 @@ function handleDeleteNode(editor: YjsEditor, key: string) {
     childrenCount: (node as Element).children.length,
   });
 
-  editor.apply({
-    type: 'remove_node',
-    path,
-    node,
-  });
+  try {
+    editor.apply({
+      type: 'remove_node',
+      path,
+      node,
+    });
 
-  Log.debug(`✅ Block deleted successfully: ${key}`);
+    Log.debug(`✅ Block deleted successfully: ${key}`);
+  } catch (e) {
+    Log.error(`❌ Failed to delete block ${key}:`, { path, error: e });
+  }
 }

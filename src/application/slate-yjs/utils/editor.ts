@@ -555,6 +555,12 @@ export function handleLiftBlockOnBackspaceAndEnterWithTxn(
 ) {
   const operations: (() => void)[] = [];
   const parent = getBlock(block.get(YjsEditorKey.block_parent), sharedRoot);
+
+  if (!parent) {
+    console.warn('[handleLiftBlockOnBackspaceAndEnterWithTxn] Parent block not found');
+    return false;
+  }
+
   const parentChildren = getChildrenArray(parent.get(YjsEditorKey.block_children), sharedRoot);
   const index = parentChildren.toArray().findIndex((id) => id === block.get(YjsEditorKey.block_id));
   const [, path] = getBlockEntry(editor, point) as NodeEntry<Element>;
@@ -672,7 +678,19 @@ export function handleMergeBlockForwardWithTxn(editor: YjsEditor, node: Element,
 export function preventIndentNode(editor: YjsEditor, blockId: string) {
   const sharedRoot = getSharedRoot(editor);
   const block = getBlock(blockId, sharedRoot);
+
+  if (!block) {
+    console.warn('[preventIndentNode] Block not found:', blockId);
+    return true;
+  }
+
   const parent = getBlock(block.get(YjsEditorKey.block_parent), sharedRoot);
+
+  if (!parent) {
+    console.warn('[preventIndentNode] Parent block not found');
+    return true;
+  }
+
   const parentChildren = getChildrenArray(parent.get(YjsEditorKey.block_children), sharedRoot);
   const index = parentChildren.toArray().findIndex((id) => id === block.get(YjsEditorKey.block_id));
 
