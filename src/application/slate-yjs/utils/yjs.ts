@@ -228,6 +228,11 @@ export function compatibleDataDeltaToYText(sharedRoot: YSharedRoot, ops: Op[], b
 
         const block = getBlock(blockId, sharedRoot);
 
+        if (!block) {
+          console.warn('Cannot convert delta to YText: block no longer exists', blockId);
+          return;
+        }
+
         block.set(YjsEditorKey.block_external_id, blockId);
         block.set(YjsEditorKey.block_external_type, YjsEditorKey.text);
         const textMap = getTextMap(sharedRoot);
@@ -752,6 +757,11 @@ export function deepCopyChildren(
 }
 
 export function mergeBlockChildren(sharedRoot: YSharedRoot, sourceBlock: YBlock, targetBlock: YBlock) {
+  if (!sourceBlock || !targetBlock) {
+    console.warn('Cannot merge block children: source or target block is undefined');
+    return;
+  }
+
   const targetType = targetBlock.get(YjsEditorKey.block_type);
 
   if (CONTAINER_BLOCK_TYPES.includes(targetType)) {

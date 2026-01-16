@@ -169,6 +169,12 @@ export const CustomEditor = {
 
       const [node, path] = blockEntry;
       const block = getBlock(node.blockId as string, sharedRoot);
+
+      if (!block) {
+        Log.warn('Block no longer exists in shared root', node.blockId);
+        return;
+      }
+
       const blockType = block.get(YjsEditorKey.block_type);
       const parent = getParent(node.blockId as string, sharedRoot);
 

@@ -46,6 +46,7 @@ import {
   updateBlockParent,
 } from '@/application/slate-yjs/utils/yjs';
 import { BlockData, BlockType, ToggleListBlockData, YBlock, YjsEditorKey, YSharedRoot } from '@/application/types';
+import { Log } from '@/utils/log';
 
 import { YjsEditor } from '../plugins/withYjs';
 
@@ -389,6 +390,11 @@ export function mergeBlocks(sharedRoot: YSharedRoot, sourceBlock: Element, targe
   const sourceYText = getText(sourceTextId, sharedRoot);
   const targetYText = getText(targetTextId, sharedRoot);
 
+  if (!sourceYText || !targetYText) {
+    Log.warn('Cannot merge blocks: source or target YText no longer exists');
+    return;
+  }
+
   const sourceOps = sourceYText.toDelta() as Op[];
 
   sourceOps.forEach((op) => {
@@ -400,7 +406,15 @@ export function mergeBlocks(sharedRoot: YSharedRoot, sourceBlock: Element, targe
   const sourceBlockId = sourceBlock.blockId as string;
   const targetBlockId = targetBlock.blockId as string;
 
-  mergeBlockChildren(sharedRoot, getBlock(sourceBlockId, sharedRoot), getBlock(targetBlockId, sharedRoot));
+  const sourceYBlock = getBlock(sourceBlockId, sharedRoot);
+  const targetYBlock = getBlock(targetBlockId, sharedRoot);
+
+  if (!sourceYBlock || !targetYBlock) {
+    Log.warn('Cannot merge block children: source or target block no longer exists');
+    return;
+  }
+
+  mergeBlockChildren(sharedRoot, sourceYBlock, targetYBlock);
   deleteBlock(sharedRoot, sourceBlock.blockId as string);
 }
 
