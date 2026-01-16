@@ -26,13 +26,15 @@ function SharePanel({ viewId }: { viewId: string }) {
   const [isLoadingMentionable, setIsLoadingMentionable] = useState(false);
   const [mentionableError, setMentionableError] = useState<string | null>(null);
   const outline = useAppOutline();
-  const hasFullAccess = useMemo(() => {
-    return people.find((p) => p.email === currentUser?.email)?.access_level === AccessLevel.FullAccess;
-  }, [people, currentUser?.email]);
-
   const isOwner = useMemo(() => {
     return role === Role.Owner;
   }, [role]);
+
+  const hasFullAccess = useMemo(() => {
+    // Workspace owners always have full access for self-hosted instances
+    if (isOwner) return true;
+    return people.find((p) => p.email === currentUser?.email)?.access_level === AccessLevel.FullAccess;
+  }, [people, currentUser?.email, isOwner]);
 
   const isMember = useMemo(() => {
     return role === Role.Member;
